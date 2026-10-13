@@ -1,5 +1,6 @@
 import re
 import random
+import os
 
 import bcrypt
 import smtplib
@@ -34,8 +35,8 @@ class Bank:
 
     
     def send_email(self, to_email, subject, body):
-        sender_email = "samadadebisi2025@gmail.com"
-        sender_password = "quoxddasqocraduj"
+        sender_email = "SMTP_EMAIL"
+        sender_password = "SMTP_PASSWORD"
 
         try:
             msg = MIMEText(body)
