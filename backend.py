@@ -37,9 +37,14 @@ class Bank:
 
 
     
+
     def send_email(self, to_email, subject, body):
-        sender_email = "SMTP_EMAIL"
-        sender_password = "SMTP_PASSWORD"
+        sender_email = os.getenv("SMTP_EMAIL")
+        sender_password = os.getenv("SMTP_PASSWORD")
+
+        if not sender_email or not sender_password:
+            print("Email configuration is missing.")
+            return
 
         try:
             msg = MIMEText(body)
@@ -55,6 +60,7 @@ class Bank:
             print("Email sent successfully")
         except Exception as e:
             print(f"Failed to send email: {e}")
+            
 
     def speak(self, text):
         try:
