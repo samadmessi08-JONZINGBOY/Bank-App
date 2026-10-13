@@ -2,6 +2,9 @@ import re
 import random
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import bcrypt
 import smtplib
 import pyttsx3
