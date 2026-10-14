@@ -34,6 +34,7 @@ class Bank:
             raise
 
         self.otp_store = {}
+        self.current_account_id = None
 
 
     
@@ -226,6 +227,7 @@ class Bank:
             }
 
     def login_account(self, email, password):
+        self.current_account_id = None
         if email == "admin" and password == "admin123":
             return {
                 "status": True,
@@ -256,10 +258,12 @@ class Bank:
                     "message": "This account has been frozen. Please contact support."
                 }
 
+            self.current_account_id = account["id"]
+
             return {
                 "status": True,
                 "message": f"Login successful, welcome {account['fullname']}",
-                "role": "customer",
+                "role": account["role"],
                 "account": account
             }
         except sql.Error as e:
@@ -271,6 +275,11 @@ class Bank:
     
 
     def check_balance(self, account_id):
+        if account_id != self.current_account_id:
+            return {
+                "status": False,
+                "message": "Unauthorized account access"
+            }
         try:
             query = "SELECT balance FROM accounts_table WHERE id = %s"
             self.mycursor.execute(query, (account_id,))
@@ -293,6 +302,11 @@ class Bank:
             }
 
     def deposit(self, account_id, amount):
+        if account_id != self.current_account_id:
+            return {
+                "status": False,
+                "message": "Unauthorized account access"
+            }
         try:
             amount = int(amount)
         except ValueError:
@@ -351,6 +365,11 @@ class Bank:
             }
 
     def withdraw(self, account_id, amount):
+        if account_id != self.current_account_id:
+            return {
+                "status": False,
+                "message": "Unauthorized account access"
+            }
         try:
             amount = int(amount)
         except ValueError:
@@ -403,6 +422,11 @@ class Bank:
             }
 
     def pay_bill(self, account_id, bill_type, amount):
+        if account_id != self.current_account_id:
+            return {
+                "status": False,
+                "message": "Unauthorized account access"
+            }
         try:
             amount = int(amount)
         except ValueError:
@@ -455,6 +479,11 @@ class Bank:
             }
 
     def view_my_transactions(self, account_id):
+        if account_id != self.current_account_id:
+            return {
+                "status": False,
+                "message": "Unauthorized account access"
+            }
         try:
             query = "SELECT * FROM transactions_table WHERE account_id = %s ORDER BY created_at DESC"
             self.mycursor.execute(query, (account_id,))
